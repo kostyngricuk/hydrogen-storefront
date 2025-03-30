@@ -52,7 +52,13 @@ export default function Collections() {
         connection={collections}
         resourcesClassName="collections-grid"
       >
-        {({node: collection, index}) => (
+        {({
+          node: collection,
+          index,
+        }: {
+          node: CollectionFragment;
+          index: number;
+        }) => (
           <CollectionItem
             key={collection.id}
             collection={collection}
@@ -72,22 +78,28 @@ function CollectionItem({
   index: number;
 }) {
   return (
-    <Link
-      className="collection-item"
-      key={collection.id}
-      to={`/collections/${collection.handle}`}
-      prefetch="intent"
-    >
-      {collection?.image && (
-        <Image
-          alt={collection.image.altText || collection.title}
-          aspectRatio="1/1"
-          data={collection.image}
-          loading={index < 3 ? 'eager' : undefined}
-        />
-      )}
-      <h5>{collection.title}</h5>
-    </Link>
+    <div>
+      <Link
+        className="collection-item"
+        key={collection.id}
+        to={`/collections/${collection.handle}`}
+        prefetch="intent"
+      >
+        {collection?.image && (
+          <Image
+            alt={collection.image.altText || collection.title}
+            aspectRatio="1/1"
+            data={collection.image}
+            loading={index < 3 ? 'eager' : undefined}
+          />
+        )}
+        <h5>{collection.title}</h5>
+      </Link>
+      <details>
+        <summary>View Collection</summary>
+        <p>{collection.description}</p>
+      </details>
+    </div>
   );
 }
 
@@ -95,6 +107,7 @@ const COLLECTIONS_QUERY = `#graphql
   fragment Collection on Collection {
     id
     title
+    description
     handle
     image {
       id
